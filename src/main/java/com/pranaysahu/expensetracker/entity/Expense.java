@@ -29,6 +29,6 @@ public class Expense {
 
     private BigDecimal amount;
 
-    private Date Date;
+    private Date date;
 
 }

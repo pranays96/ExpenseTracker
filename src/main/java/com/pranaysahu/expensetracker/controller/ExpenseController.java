@@ -1,6 +1,7 @@
 package com.pranaysahu.expensetracker.controller;
 
 import com.pranaysahu.expensetracker.dto.ExpenseDTO;
+import com.pranaysahu.expensetracker.dto.ExpenseFilterDTO;
 import com.pranaysahu.expensetracker.service.ExpenseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -25,6 +26,7 @@ public class ExpenseController {
     @GetMapping("/expenses")
     public String showExpenseList(Model model) {
         model.addAttribute("expenses", expenseService.getAllExpenses());
+        model.addAttribute("filter", new ExpenseFilterDTO());
         return "expenses-list";
     }
     @GetMapping("/createExpense")
