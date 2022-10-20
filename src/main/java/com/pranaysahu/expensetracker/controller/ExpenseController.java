@@ -25,8 +25,11 @@ public class ExpenseController {
 
     @GetMapping("/expenses")
     public String showExpenseList(Model model) {
-        model.addAttribute("expenses", expenseService.getAllExpenses());
+        List<ExpenseDTO> list =expenseService.getAllExpenses();
+        model.addAttribute("expenses", list);
         model.addAttribute("filter", new ExpenseFilterDTO());
+        String totalExpenses = expenseService.totalExpenses(list);
+        model.addAttribute("totalExpenses", totalExpenses);
         return "expenses-list";
     }
     @GetMapping("/createExpense")

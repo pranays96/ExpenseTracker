@@ -1,5 +1,6 @@
 package com.pranaysahu.expensetracker.service;
 
+import com.ibm.icu.text.NumberFormat;
 import com.pranaysahu.expensetracker.dto.ExpenseDTO;
 import com.pranaysahu.expensetracker.dto.ExpenseFilterDTO;
 import com.pranaysahu.expensetracker.entity.Expense;
@@ -10,9 +11,11 @@ import org.modelmapper.ModelMapper;
 
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.sql.Date;
 import java.text.ParseException;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -97,6 +100,16 @@ public class ExpenseService {
             filteredList.sort((o1, o2) -> o2.getAmount().compareTo(o1.getAmount()));
         }
         return filteredList;
+    }
+
+    public String  totalExpenses(List<ExpenseDTO> expenses){
+        BigDecimal sum = new BigDecimal(0);
+
+        BigDecimal total = expenses.stream().map(x -> x.getAmount().add(sum))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        NumberFormat format = NumberFormat.getCurrencyInstance(new Locale("en", "in"));
+        return format.format(total).substring(2);
     }
 
 
