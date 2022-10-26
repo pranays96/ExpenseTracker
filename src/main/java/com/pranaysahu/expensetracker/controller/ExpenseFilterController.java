@@ -22,8 +22,9 @@ public class ExpenseFilterController {
     public String filterExpenses(@ModelAttribute("filter")ExpenseFilterDTO expenseFilterDTO, Model model) throws ParseException {
         System.out.println("Printing the filter dto:" +expenseFilterDTO);
         List<ExpenseDTO> list = expenseService.getFilteredExpenses(expenseFilterDTO);
-
         model.addAttribute("expenses", list);
+        String totalExpenses = expenseService.totalExpenses(list);
+        model.addAttribute("totalExpenses", totalExpenses);
         return "expenses-list";
     }
 

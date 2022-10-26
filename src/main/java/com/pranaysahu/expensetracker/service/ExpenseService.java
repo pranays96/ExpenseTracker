@@ -4,6 +4,7 @@ import com.ibm.icu.text.NumberFormat;
 import com.pranaysahu.expensetracker.dto.ExpenseDTO;
 import com.pranaysahu.expensetracker.dto.ExpenseFilterDTO;
 import com.pranaysahu.expensetracker.entity.Expense;
+import com.pranaysahu.expensetracker.entity.User;
 import com.pranaysahu.expensetracker.repository.ExpenseRepository;
 import com.pranaysahu.expensetracker.util.DateTimeUtil;
 import lombok.RequiredArgsConstructor;
@@ -25,10 +26,12 @@ public class ExpenseService {
 
     private final ExpenseRepository expenseRepository;
     private final ModelMapper modelMapper;
+    private final UserService userService;
 
 
     public List<ExpenseDTO> getAllExpenses(){
-        List<Expense> list = expenseRepository.findAll();
+        User user = userService.getLoggedInUser();
+        List<Expense> list = expenseRepository.findByUserId(user.getId());
         List<ExpenseDTO> expenseList = list.stream().map(this::mapToDTO).collect(Collectors.toList());
         return expenseList;
     }
@@ -42,7 +45,8 @@ public class ExpenseService {
     public ExpenseDTO saveExpenseDetails(ExpenseDTO expenseDTO) throws ParseException {
         //map the DTO to entity
         Expense expense = maptoEntity(expenseDTO);
-
+        //add the loggedin user to the expense entity
+        expense.setUser(userService.getLoggedInUser());
         //save the entity to database
         expense = expenseRepository.save(expense);
 
@@ -89,8 +93,12 @@ public class ExpenseService {
 
         Date startDate = !startDateString.isEmpty() ? DateTimeUtil.convertStringToDate(startDateString) : new Date(0);
         Date endDate = !endDateString.isEmpty() ? DateTimeUtil.convertStringToDate(endDateString) : new Date(System.currentTimeMillis());
-
-        List<Expense> list = expenseRepository.findByNameContainingAndDateBetween(keyword, startDate, endDate);
+        User user = userService.getLoggedInUser();
+        List<Expense> list = expenseRepository.findByNameContainingAndDateBetweenAndUserId(
+                keyword,
+                startDate,
+                endDate,
+                user.getId());
         List<ExpenseDTO> filteredList = list.stream().map(this::mapToDTO).collect(Collectors.toList());
         if (sortBy.equals("date")) {
             //sort it by expense date
@@ -111,6 +119,7 @@ public class ExpenseService {
         NumberFormat format = NumberFormat.getCurrencyInstance(new Locale("en", "in"));
         return format.format(total).substring(2);
     }
+
 
 
 }
