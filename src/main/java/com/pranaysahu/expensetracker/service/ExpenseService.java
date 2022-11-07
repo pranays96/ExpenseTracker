@@ -5,6 +5,7 @@ import com.pranaysahu.expensetracker.dto.ExpenseDTO;
 import com.pranaysahu.expensetracker.dto.ExpenseFilterDTO;
 import com.pranaysahu.expensetracker.entity.Expense;
 import com.pranaysahu.expensetracker.entity.User;
+import com.pranaysahu.expensetracker.exception.ExpenseNotFoundException;
 import com.pranaysahu.expensetracker.repository.ExpenseRepository;
 import com.pranaysahu.expensetracker.util.DateTimeUtil;
 import lombok.RequiredArgsConstructor;
@@ -83,7 +84,7 @@ public class ExpenseService {
     }
 
     private Expense getExpense(String id){
-        return expenseRepository.findByExpenseId(id).orElseThrow(() -> new RuntimeException("Expense not found for the id"+ id));
+        return expenseRepository.findByExpenseId(id).orElseThrow(() -> new ExpenseNotFoundException("Expense not found for the id"+ id));
     }
     public List<ExpenseDTO> getFilteredExpenses(ExpenseFilterDTO expenseFilterDTO) throws ParseException {
         String keyword = expenseFilterDTO.getKeyword();
