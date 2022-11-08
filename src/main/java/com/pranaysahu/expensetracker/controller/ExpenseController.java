@@ -3,6 +3,7 @@ package com.pranaysahu.expensetracker.controller;
 import com.pranaysahu.expensetracker.dto.ExpenseDTO;
 import com.pranaysahu.expensetracker.dto.ExpenseFilterDTO;
 import com.pranaysahu.expensetracker.service.ExpenseService;
+import com.pranaysahu.expensetracker.util.DateTimeUtil;
 import com.pranaysahu.expensetracker.validator.ExpenseValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -32,7 +33,7 @@ public class ExpenseController {
 //        list = null;
 //        list.size();
         model.addAttribute("expenses", list);
-        model.addAttribute("filter", new ExpenseFilterDTO());
+        model.addAttribute("filter", new ExpenseFilterDTO(DateTimeUtil.getCurrentMonthStartDate(), DateTimeUtil.getCurrentMonthDate()));
         String totalExpenses = expenseService.totalExpenses(list);
         model.addAttribute("totalExpenses", totalExpenses);
         return "expenses-list";
