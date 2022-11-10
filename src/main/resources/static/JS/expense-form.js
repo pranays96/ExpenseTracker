@@ -44,6 +44,11 @@ $(function(){
                 dateString:{
                     required: 'Please enter the date'
                 }
+            },
+            errorElement: 'em',
+                            errorPlacement: function(error, element) {
+                            error.addClass('help-block');
+                            error.insertAfter(element);
             }
         })
     }
